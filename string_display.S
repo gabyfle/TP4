@@ -1,4 +1,4 @@
-.file "hello2.S"
+.file "string_display.S"
 .intel_syntax noprefix
 
 /* Section de données */
@@ -10,9 +10,6 @@ end: .byte 0
 /* Section de code */
 .text
 
-/*  Le symbole _start est le point d'entrée du programme, il repère l'adresse de
-    la toute première instruction exécutée. Il est défini comme global sans quoi
-    l'éditeur de liens ne pourra pas le trouver.                              */
 .global _start
 _start:
         lea     r12, msg[rip]
