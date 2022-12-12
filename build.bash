@@ -10,7 +10,7 @@ fi
 # Assembling the file name given in argument $1
 as -g $1 -o build/$1.o
 # Linking the object file
-gcc build/$1.o -o build/$2 -nostdlib 
+gcc build/$1.o -o build/$2 -nostdlib -fPIE -pie -no-pie -g
 
 # Deleting object files
 rm build/$1.o
