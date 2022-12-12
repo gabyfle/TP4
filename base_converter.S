@@ -11,18 +11,22 @@
 .data
 
 nombre:         .quad   0x1c615658fa0b1    /* nombre à convertir */
-base:           .byte   2                 /* base dans laquelle on doit convertir */
-chaine:         .fill   21, 1             /* chaîne qui stocke le résultat de la conversion */
+chiffres:       .ascii  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" /* contient tous les chiffres de la base 2 à la base 36 */
+base:           .byte   30                 /* base dans laquelle on doit convertir */
+chaine:         .fill   64, 1             /* chaîne qui stocke le résultat de la conversion */
 end:            .byte   0x0a               /* caractère de fin de ligne */
 
 .text
 
+/* Bonjour tout le monde! */
+
 .global _start
 _start:
-    lea     r10, chaine[rip]            /* on met le pointeur sur le début de chaîne */                                  
+    lea     r10, chaine[rip]            /* on met le pointeur sur le début de chaîne */
+    lea     r11, chiffres[rip]                  /* on stocke la chaine des chiffres dans r10 */                               
 
     mov     rsi, base                   /* on mets dans rsi la base */
-    mov     r13, 0                      /* initialisation du compteur */
+    mov     r13, 1                      /* initialisation du compteur */
     mov     rax, nombre                 /* on met le nombre à convertir dans rax */
 
     /*
@@ -32,8 +36,8 @@ _start:
         xor     rdx, rdx                    /* reset de rdx à 0 pour pouvoir l'utiliser après et afficher les bons caractères */
         div     rsi                         /* on divise rax par la base et on met le reste dans rdx */
                                             /* donc rdx = nombre % base et rax = nombre / base */
-        add     rdx, '0'                    /* on ajoute 48 au reste pour avoir le code ASCII du chiffre */
-        mov     [r10 + r13], rdx            /* on met le chiffre dans la chaîne (en partant de la fin) */ 
+        mov     r15, [r11 + rdx]
+        mov     [r10 + r13], r15            /* on met le chiffre dans la chaîne (en partant de la fin) */ 
         inc     r13                         /* on incrémente le compteur (qui nous servira à connaître la taille de la chaîne) */
         cmp     rax, 0                      /* on compare le nombre à convertir avec 0 */
         jne     diviser                     /* si le nombre n'est pas égal à 0, on continue la division */
@@ -46,6 +50,7 @@ _start:
     */
     lea r10, chaine[rip]                    /* on met le pointeur sur le début de chaîne */
     add r10, r13                            /* on se met directement à la fin de la chaîne */
+    sub r10, 1
     
     mov rdx, 1                              /* taille: 1 caractère, stdout et function write */
     mov rdi, rdx
